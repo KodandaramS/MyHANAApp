@@ -26,6 +26,7 @@ modules:
           srv-url: ${default-url}
     requires:
       - name: MyHANAApp-db
+      - name: MyHANAApp-auth
 
   - name: MyHANAApp-db-deployer
     type: hdb
@@ -49,6 +50,7 @@ modules:
           name: srv-api # must be used in xs-app.json as well
           url: ~{srv-url}
           forwardAuthToken: true
+      - name: MyHANAApp-auth
 
 resources:
   - name: MyHANAApp-db
@@ -56,3 +58,12 @@ resources:
     parameters:
       service: hana
       service-plan: hdi-shared
+  - name: MyHANAApp-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: MyHANAApp-${org}-${space}
+        tenant-mode: dedicated
